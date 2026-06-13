@@ -1,0 +1,14 @@
+{
+  "model": {
+    "id": "iliemihai/mt5-base-romanian-diacritics",
+    "source": "Hugging Face",
+    "url": "https://huggingface.co/iliemihai/mt5-base-romanian-diacritics",
+    "description": "Model mT5-base fine-tuned pentru restaurare diacritice in limba romana (390M params)"
+  },
+  "dataset": {
+    "id": "dumitrescustefan/diacritic",
+    "source": "Hugging Face",
+    "url": "https://huggingface.co/datasets/dumitrescustefan/diacritic",
+    "description": "Dataset folosit la fine-tuning"
+  }
+}
