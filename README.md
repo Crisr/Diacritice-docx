@@ -46,10 +46,37 @@ python -m venv .venv
 
 # Instalează dependințele
 pip install -r requirements.txt
-
-# Opțional: reinstalează PyTorch cu CUDA pentru GPU
-pip install torch --index-url https://download.pytorch.org/whl/cu126
 ```
+
+#### Accelerare GPU (CUDA)
+
+Pasul de mai sus instalează PyTorch **CPU-only**. Pentru rulare pe GPU NVIDIA, PyTorch trebuie reinstalat cu suport CUDA, altfel procesarea va rula doar pe procesor (mult mai lent).
+
+**Verifică versiunea ta de CUDA:**
+
+```powershell
+nvidia-smi
+```
+
+În output, caută rândul `CUDA Version: X.Y` (ex: `12.6`, `12.8`, `11.8`).
+
+**Alege comanda potrivită în funcție de versiunea CUDA:**
+
+| Versiune CUDA | Comandă pip |
+|---|---|
+| 12.8 / 12.7 / 12.6 | `pip install torch --index-url https://download.pytorch.org/whl/cu126` |
+| 12.4 / 12.3 / 12.1 | `pip install torch --index-url https://download.pytorch.org/whl/cu124` |
+| 11.8 | `pip install torch --index-url https://download.pytorch.org/whl/cu118` |
+
+> Indexurile PyTorch sunt retrocompatibile cu versiuni mai noi de CUDA (ex: cu126 rulează și pe CUDA 12.8). Pentru lista completă și actualizată, vezi [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/).
+
+**Verifică instalarea CUDA:**
+
+```powershell
+python -c "import torch; print(f'CUDA disponibil: {torch.cuda.is_available()}')"
+```
+
+Dacă afișează `True`, accelerarea hardware este activă. Dacă nu ai GPU NVIDIA sau nu instalezi PyTorch CUDA, scriptul va folosi automat CPU — poți forța explicit cu `--cpu`.
 
 ### Utilizare
 
@@ -121,10 +148,37 @@ source .venv/bin/activate   # Linux/macOS
 .venv\Scripts\Activate.ps1   # Windows
 
 pip install -r requirements.txt
-
-# Optional: reinstall PyTorch with CUDA for GPU (NVIDIA)
-pip install torch --index-url https://download.pytorch.org/whl/cu126
 ```
+
+#### GPU Acceleration (CUDA)
+
+The step above installs PyTorch **CPU-only**. For NVIDIA GPU acceleration, PyTorch must be reinstalled with CUDA support — otherwise processing runs on CPU only (much slower).
+
+**Check your CUDA version:**
+
+```bash
+nvidia-smi
+```
+
+Look for `CUDA Version: X.Y` in the output (e.g. `12.6`, `12.8`, `11.8`).
+
+**Choose the right command for your CUDA version:**
+
+| CUDA Version | pip command |
+|---|---|
+| 12.8 / 12.7 / 12.6 | `pip install torch --index-url https://download.pytorch.org/whl/cu126` |
+| 12.4 / 12.3 / 12.1 | `pip install torch --index-url https://download.pytorch.org/whl/cu124` |
+| 11.8 | `pip install torch --index-url https://download.pytorch.org/whl/cu118` |
+
+> PyTorch wheels are backward-compatible with newer CUDA drivers (e.g. cu126 works on CUDA 12.8). For the full and up-to-date list see [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/).
+
+**Verify CUDA installation:**
+
+```bash
+python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
+```
+
+If it prints `True`, hardware acceleration is active. If you don't have an NVIDIA GPU or skip the CUDA step, the script will automatically fall back to CPU — you can also force it explicitly with `--cpu`.
 
 ### Usage
 
