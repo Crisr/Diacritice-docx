@@ -4,6 +4,8 @@ import torch
 from pathlib import Path
 from tqdm import tqdm
 from transformers import MT5ForConditionalGeneration, T5Tokenizer
+from huggingface_hub import snapshot_download
+from huggingface_hub.constants import default_cache_path
 
 
 _CONFIG_PATH = Path(__file__).resolve().parent.parent / "config.json"
@@ -16,6 +18,15 @@ else:
     MODEL_ID = "iliemihai/mt5-base-romanian-diacritics"
 
 
+def _ensure_model_files(repo_id: str) -> None:
+    repo_cache = Path(default_cache_path) / f"models--{repo_id.replace('/', '--')}"
+    safetensors = list(repo_cache.rglob("*.safetensors")) + list(repo_cache.rglob("*.bin")) if repo_cache.exists() else []
+    if safetensors:
+        return
+    print(f"  Se descarca modelul de pe Hugging Face (~1.5GB, prima data dureaza ~2-3 min)...")
+    snapshot_download(repo_id=repo_id, resume_download=True)
+
+
 class DiacriticsModel:
     def __init__(self, device: str | None = None):
         if device is None:
@@ -25,6 +36,7 @@ class DiacriticsModel:
 
         dtype = torch.float16 if self.device == "cuda" else torch.float32
 
+        _ensure_model_files(MODEL_ID)
         self.tokenizer = T5Tokenizer.from_pretrained(MODEL_ID)
         self.model = MT5ForConditionalGeneration.from_pretrained(
             MODEL_ID,
